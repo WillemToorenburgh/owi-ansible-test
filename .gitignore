@@ -1,3 +1,14 @@
+# Ansible directories
+**/fetch/**
+/downloads
+.cache
+galaxy/roles/**
+
+# Vault files
+.ansiblevault
+
+## Github template for Python
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

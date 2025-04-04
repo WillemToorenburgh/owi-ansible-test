@@ -1,3 +1,10 @@
 {
-    "nixEnvSelector.nixFile": "${workspaceFolder}/shell.nix"
+    
+    "nixEnvSelector.nixFile": "${workspaceFolder}/shell.nix",
+    "files.associations": {
+        "**.yml": "ansible",
+        "**.yaml": "ansible"
+    },
+    "ansible.python.interpreterPath": "/nix/store/dzi9r3xn0ny4l4gwnyqpncljq40pdk6f-python3-3.12.8/bin/python",
+    "ansible.lightspeed.enabled": false
 }

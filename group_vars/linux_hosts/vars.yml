@@ -1,0 +1,10 @@
+ansible_user: ansible_provision
+ansible_ssh_private_key_file: ssh/ansible_provision.pem
+ansible_become_method: sudo
+ansible_become_password: "{{ secrets_ansible_password }}"
+
+human_user: offworld-admin
+human_password: "{{ secrets_human_password }}"
+human_ssh_public_key: ""
+human_user_extra_groups:
+  - "sudo"

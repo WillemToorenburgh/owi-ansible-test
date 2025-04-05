@@ -1,0 +1,13 @@
+linux_hosts:
+  children:
+    docker_hosts:
+    monitoring_servers:
+
+docker_hosts:
+  children:
+    monitoring_servers:
+
+monitoring_servers:
+  hosts:
+    owi-vm:
+      ansible_host: owi-vm.couchlan

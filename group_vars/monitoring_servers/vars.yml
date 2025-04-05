@@ -1,0 +1,1 @@
+grafana_default_admin_password: "{{ secrets_grafana_default_admin_password }}"

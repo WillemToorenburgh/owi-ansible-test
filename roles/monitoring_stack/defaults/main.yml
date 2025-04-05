@@ -1,0 +1,11 @@
+monitoring_stack_user: "monitoring-user"
+monitoring_stack_user_id: 1111
+
+monitoring_stack_docker_directory: "/home/{{ monitoring_stack_user }}/docker"
+monitoring_stack_compose_file_location: "{{ monitoring_stack_docker_directory }}/docker-compose.yml"
+
+monitoring_stack_prometheus_data_directory: "{{ monitoring_stack_docker_directory }}/prometheus/data"
+monitoring_stack_prometheus_config_directory: "{{ monitoring_stack_docker_directory }}/prometheus/config"
+
+monitoring_stack_grafana_data_directory: "{{ monitoring_stack_docker_directory }}/grafana/data"
+monitoring_stack_grafana_logs_directory: "{{ monitoring_stack_docker_directory }}/grafana/logs"

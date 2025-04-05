@@ -19,7 +19,7 @@
           - "{{ human_user }}"
         # Expose the Daemon's stats on a port for Prometheus to consume
         docker_daemon_options:
-          metrics-addr: "127.0.0.1:9323"
+          metrics-addr: "0.0.0.0:9323"
     - role: prometheus.prometheus.node_exporter
       tags:
         - node_exporter
@@ -29,4 +29,11 @@
         # TODO: assess whether this is a security problem when metrics are only accessible locally
         node_exporter_basic_auth_users: {}
         # Bind to the loopback address so we don't expose the node_exporter to the network
-        node_exporter_web_listen_address: "127.0.0.1:9100"
+        # Or at least that was the plan! Need to figure out a way to allow traffic from the
+        # Docker network, or else these ports will need to be firewalled instead
+        node_exporter_web_listen_address: "0.0.0.0:9100"
+    - role: monitoring_stack
+      tags:
+        - monitoring_stack
+        - prometheus
+        - grafana

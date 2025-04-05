@@ -1,0 +1,30 @@
+- name: Create docker-compose.yml on machine
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ monitoring_stack_compose_file_location }}"
+    owner: "{{ monitoring_stack_user }}"
+    group: "{{ monitoring_stack_user }}"
+    mode: "0600"
+  # We don't set up a notify: or register: as the `docker compose up` command already checks for changes in config files
+  become: true
+
+# - name: maybe a service for the stack so it survives reboots
+#   ansible.builtin.systemd_service:
+
+- name: Copy Prometheus config
+  ansible.builtin.copy:
+    src: prometheus.yml
+    dest: "{{ monitoring_stack_prometheus_config_directory }}/prometheus.yml"
+    owner: "{{ monitoring_stack_user }}"
+    group: "{{ monitoring_stack_user }}"
+    mode: "0600"
+  become: true
+
+- name: Create Grafana admin password file
+  ansible.builtin.copy:
+    content: "{{ grafana_default_admin_password }}"
+    dest: "{{ monitoring_stack_docker_directory }}/grafana/grafana_admin.secret"
+    owner: "{{ monitoring_stack_user }}"
+    group: "{{ monitoring_stack_user }}"
+    mode: "0600"
+  become: true

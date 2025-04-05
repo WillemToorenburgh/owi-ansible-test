@@ -1,0 +1,40 @@
+services:
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    restart: unless-stopped
+    pull_policy: missing
+    user: "{{ monitoring_stack_user_id }}"
+    ports:
+      - "9090:9090"
+    # Enable Docker's magic internal host location
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      # Mount for config files
+      - "{{ monitoring_stack_prometheus_config_directory }}:/etc/prometheus:ro"
+      # Mount for data
+      - "{{ monitoring_stack_prometheus_data_directory }}:/prometheus:rw"
+
+  grafana:
+    image: grafana/grafana:11.6.0
+    pull_policy: missing
+    restart: unless-stopped
+    user: "{{ monitoring_stack_user_id }}"
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    environment:
+      # Log to both console and file
+      - GF_LOG_MODE=console file
+      # Access the admin password via secrets
+      - GF_SECURITY_ADMIN_PASSWORD__FILE=/run/secrets/grafana_admin_password
+    volumes:
+      - "{{ monitoring_stack_grafana_data_directory }}:/var/lib/grafana:rw"
+      - "{{ monitoring_stack_grafana_logs_directory }}:/var/log/grafana:rw"
+    secrets:
+      - grafana_admin_password
+
+secrets:
+  grafana_admin_password:
+    file: ./grafana/grafana_admin.secret

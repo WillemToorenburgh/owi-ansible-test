@@ -1,0 +1,11 @@
+- name: Execute setup tasks
+  ansible.builtin.include_tasks:
+    file: setup.yml
+
+- name: Prepare config files
+  ansible.builtin.include_tasks:
+    file: config.yml
+
+- name: Run Docker Compose
+  ansible.builtin.include_tasks:
+    file: compose-stack.yml

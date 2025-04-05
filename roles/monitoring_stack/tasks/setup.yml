@@ -1,0 +1,25 @@
+- name: Create monitoring user
+  ansible.builtin.user:
+    name: "{{ monitoring_stack_user }}"
+    # We set an explicit ID so we can pass those to Docker containers
+    uid: "{{ monitoring_stack_user_id }}"
+    # Add the service user to the Docker group to allow it to actually run the containers
+    groups:
+      - docker
+  become: true
+  register: monitoring_user
+
+- name: Create compose project directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ monitoring_stack_user }}"
+    group: "{{ monitoring_stack_user }}"
+    mode: "0700"
+    state: directory
+    recurse: true
+  loop:
+    - "{{ monitoring_stack_prometheus_data_directory }}"
+    - "{{ monitoring_stack_prometheus_config_directory }}"
+    - "{{ monitoring_stack_grafana_data_directory }}"
+    - "{{ monitoring_stack_grafana_logs_directory }}"
+  become: true

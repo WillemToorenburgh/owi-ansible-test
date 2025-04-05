@@ -1,0 +1,19 @@
+- name: Provision monitoring server
+  hosts: monitoring_servers
+  gather_facts: true
+  roles:
+    - role: linux_common
+      vars:
+        linux_common_human_user: "{{ human_user }}"
+        linux_common_human_password: "{{ human_password }}"
+        linux_common_human_ssh_public_key: "{{ human_ssh_public_key }}"
+        linux_common_human_user_extra_groups: "{{ human_user_extra_groups }}"
+    - role: docker
+      tags:
+        - docker
+      vars:
+        docker_edition: ce
+        # Set to false to use the version of Docker pinned for 24.04 LTS
+        docker_add_repo: true
+        docker_users:
+          - "{{ human_user }}"

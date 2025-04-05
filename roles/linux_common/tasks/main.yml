@@ -1,0 +1,23 @@
+- name: "Create user {{ linux_common_human_user }}"
+  ansible.builtin.user:
+    name: "{{ linux_common_human_user }}"
+    password: "{{ linux_common_human_password }}"
+    # Enable append to not wipe out other group memberships
+    append: true
+    groups: "{{ linux_common_human_user_extra_groups }}"
+  become: true
+
+- name: Add known SSH key
+  ansible.posix.authorized_key:
+    user: "{{ linux_common_human_user }}"
+    key: "{{ linux_common_human_ssh_public_key }}"
+
+- name: Disable SSH password authentication
+  ansible.builtin.copy:
+    content: PasswordAuthentication no
+    dest: /etc/ssh/sshd_config.d/DisablePasswordAuth.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload sshd
+  become: true

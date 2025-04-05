@@ -1,0 +1,4 @@
+linux_common_human_user: ~
+linux_common_human_password: ~
+linux_common_human_ssh_public_key: ~
+linux_common_human_user_extra_groups: ~

@@ -1,10 +1,6 @@
 # owi-ansible-test
 Technical assessment for OWI - Ansible
 
-## Notes from Willem
-
-This was built on my home workstation running NixOS, which makes the dependency management of the repo a little non-standard. If you're evaluating this on a Windows machine, using Nix on WSL may be the easiest method to replicate my working setup. If there's time after I complete this evaluation task, I'll try to add some Windows-friendly repo setup steps.
-
 ## Objective
 
 Run Grafana and Prometheus using Docker on Ubuntu Server 24.04.1 LTS.
@@ -18,3 +14,49 @@ Run Grafana and Prometheus using Docker on Ubuntu Server 24.04.1 LTS.
 * Documentation for playbook/roles, especially around working with the repo and variables
 * Inventory group named `monitoring_servers`
 * Single linux user per purpose
+
+## Future work
+
+* A dynamic inventory system using an `inventory.py` script, for a scalable inventory
+* A script for encrypting and decrypting vault files using a secrets management service (Bitwarden, Azure Key Vault, AWS Secrets Manager, Hashicorp Vault, etc)
+
+## Notes from Willem
+
+This was built on my home workstation running NixOS, which makes the dependency management of the repo a little non-standard. If you're evaluating this on a Windows machine, using Nix on WSL may be the easiest method to replicate my working setup. If there's time after I complete this evaluation task, I'll try to add some Windows-friendly repo setup steps.
+
+---
+
+This was a novel experience! I've only ever worked in already established Ansible repos. Setting up a new one from scratch is interesting! It highlighed some gaps in my knowledge that I'm glad to fill in.
+
+---
+
+It seems that Ubuntu Server LTS 24.04.2 was released since the assessments' requirements were written. Seeing as it's just a patch version, hopefully this is acceptable.
+
+---
+
+Roles from Galaxy are installed in `galaxy/roles`. Install requirements using `ansible-galaxy install -r requirements.yml`
+
+---
+
+To set up Vault:
+
+* Copy `.ansiblevault-example` to `.ansiblevault`
+* Replace the example password in `.ansiblevault` with the real password
+* Make the file executable: `chmod +x ./.ansiblevault`
+
+---
+
+Ran a VM on my home Proxmox machine for the target server. Installation steps:
+
+* Select `Ubuntu Server (minimized)`
+* Enabled third-party drivers
+* Disabled LVM for storage for simplicity
+* Created `ansible_provision` user
+* Enabled OpenSSH server
+* Imported SSH public key generated for this task using Github
+* Did not install any server snaps
+* Installed Proxmox guest agent (`qemu-guest-agent`), enabled and started systemd service
+* Install completed, rebooted, shutdown after boot
+* Took Proxmox snapshot at this point, for easy resets
+
+---

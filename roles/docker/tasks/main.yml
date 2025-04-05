@@ -1,0 +1,7 @@
+# This is to work around Mr. Geerling's role not using Become
+# https://github.com/geerlingguy/ansible-role-docker/issues/490
+- name: Run geerlingguy.docker with become
+  ansible.builtin.include_role:
+    name: geerlingguy.docker
+    apply:
+      become: true

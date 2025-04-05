@@ -34,7 +34,12 @@ It seems that Ubuntu Server LTS 24.04.2 was released since the assessments' requ
 
 ---
 
-Roles from Galaxy are installed in `galaxy/roles`. Install requirements using `ansible-galaxy install -r requirements.yml`
+Roles and collections from Galaxy are installed in `galaxy/roles` and `galaxy/collections` respectively. Install requirements using `ansible-galaxy install -r requirements.yml`
+
+Things used from Galaxy:
+
+* Role - `geerlingguy.docker`: The excellent Jeff Geerlings is an Ansible community hero, and I trust his efforts. No need to reinvent this particular wheel.
+* Collection - `prometheus.prometheus` (specifically for the `node_exporter` role): This repeatedly came up while I was researching Prometheus and Ansible. As it's blessed by both the Ansible and Prometheus communities, I decided to trust it. I'm unfamiliar with Prometheus, and writing this installation manually would likely cause a significant delay.
 
 ---
 
@@ -58,5 +63,9 @@ Ran a VM on my home Proxmox machine for the target server. Installation steps:
 * Installed Proxmox guest agent (`qemu-guest-agent`), enabled and started systemd service
 * Install completed, rebooted, shutdown after boot
 * Took Proxmox snapshot at this point, for easy resets
+
+---
+
+For the Prometheus requirement, it was unclear to me whether it should be running in Docker or on the host. I'm erring on the side of Docker for this implementation.
 
 ---

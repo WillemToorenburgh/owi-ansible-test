@@ -1,2 +1,6 @@
-- name: geerlingguy.docker
-# - name: geerlingguy.nginx
+roles:
+  - name: geerlingguy.docker
+  # - name: geerlingguy.nginx
+
+collections:
+  - name: prometheus.prometheus

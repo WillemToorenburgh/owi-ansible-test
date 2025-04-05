@@ -3,6 +3,7 @@
 /downloads
 .cache
 galaxy/roles/**
+galaxy/collections/**
 
 # Vault files
 .ansiblevault

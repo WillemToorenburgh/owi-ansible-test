@@ -17,3 +17,16 @@
         docker_add_repo: true
         docker_users:
           - "{{ human_user }}"
+        # Expose the Daemon's stats on a port for Prometheus to consume
+        docker_daemon_options:
+          metrics-addr: "127.0.0.1:9323"
+    - role: prometheus.prometheus.node_exporter
+      tags:
+        - node_exporter
+        - prometheus
+      vars:
+        # Intentionally empty this var so node_exporter doesn't require authentication
+        # TODO: assess whether this is a security problem when metrics are only accessible locally
+        node_exporter_basic_auth_users: {}
+        # Bind to the loopback address so we don't expose the node_exporter to the network
+        node_exporter_web_listen_address: "127.0.0.1:9100"

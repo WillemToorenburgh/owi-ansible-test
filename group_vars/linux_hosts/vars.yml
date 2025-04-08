@@ -10,3 +10,9 @@ human_password: "{{ secrets_human_password }}"
 human_ssh_public_key: ""
 human_user_extra_groups:
   - "sudo"
+
+# Map our vars for the linux_common role
+linux_common_human_user: "{{ human_user }}"
+linux_common_human_password: "{{ human_password }}"
+linux_common_human_ssh_public_key: "{{ human_ssh_public_key }}"
+linux_common_human_user_extra_groups: "{{ human_user_extra_groups }}"

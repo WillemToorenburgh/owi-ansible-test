@@ -25,6 +25,24 @@ Run Grafana and Prometheus using Docker on Ubuntu Server 24.04.1 LTS.
     * Replace the example password in `.ansiblevault` with the real password, which I will provide you.
     * Make the file executable: `chmod +x ./.ansiblevault`
 1. Create an SSH key pair in the `ssh/` directory: `ssh-keygen -f ssh/ansible_provision`, or bring your own! The repo expects the key to be named `ansible_provision.pem`. Because the server has to be initially set up with an SSH public key, the `ansible_provision.pub` isn't used in this codebase.
+    > [!NOTE] Change the `ansible_ssh_private_key_file` variable in `group_vars/linux_hosts/vars.yml` to whatever you like if you don't want to use `ansible_provision.pem`.
+1. Modify `inventory.yml` to point to your desired host(s)
+
+## Configuration
+
+### Group vars
+
+#### Linux hosts
+
+Contains connection configuration for Ansible to members of the group, and account details for the `offworld-admin` user. Be sure to drop in the public key text of your choice into the `human_ssh_public_key` variable!
+
+#### Monitoring servers
+
+This is all configurations specific to the monitoring stack, including user accounts and dashboards. Try adding a new Grafana user, or another dashboard from [the Grafana website!](https://grafana.com/grafana/dashboards)
+
+### Roles
+
+Each role's required variables are all defined in their Readme files. See [`linux_common`](roles/linux_common/README.md) and [`monitoring_stack`](roles/monitoring_stack/README.md).
 
 ## Tags
 
@@ -36,7 +54,6 @@ Tags:
 * `dashboards` - All steps that manage Grafana dashboards. Use when you're wanting to quickly update or modify them.
 * `configure` - All steps that configure systems and services. Helpful when modifying many configurations and variables at once.
 * `configure-(containers|prometheus|grafana)` - All steps that relate to configuring the named system. Helpful when you're making changes to a single service.
-* `docker-compose` - Just runs `docker compose`. Helpful if you're wanting to force the stack to restart, or take some other action.
 * `prometheus` - All tasks that have anything to do with Prometheus.
 * `grafana` - All tasks that have anything to do with Grafana.
 
@@ -47,35 +64,13 @@ Additionally, each role has been tagged with its own name, in case you want to r
 * `node_exporter` - Tasks for configuring the `node_exporter` program which gathers system metrics for use in Prometheus.
 * `monitoring_stack` - Tasks for setting up the entire monitoring stack.
 
-## Configuration
-
-### `provision_monitoring_server.yml` Playbook
-
-I tried to put the values that are most likely to need to change frequently here. Try adding another dashboard from [the Grafana website!](https://grafana.com/grafana/dashboards)
-
-### Group vars
-
-#### Linux hosts
-
-Contains connection configuration for Ansible to members of the group, and account details for the `offworld-admin` user. Be sure to drop in the public key text of your choice into the `human_ssh_public_key` variable!
-
-#### Monitoring servers
-
-This is all Grafana configurations, including user accounts. Try adding another user!
-
-### Roles
-
-#### `monitoring_stack`
-
-See the [README in the role](roles/monitoring_stack/README.md).
-
 ## External resources used and their justifications
 
 ### Ansible Galaxy
 
-* Role - `geerlingguy.docker`
-  > The excellent Jeff Geerlings is an Ansible community hero, and I trust his efforts. No need to reinvent this particular wheel. I needed to wrap the role with my own in order to make the role use `become`, but this could possibly have been worked around by setting `ansible_become: true` in the group vars. Offers excellent configurability.
-* Collection - `prometheus.prometheus` (specifically for the `node_exporter` role)
+* Role - [`geerlingguy.docker`](https://github.com/geerlingguy/ansible-role-docker)
+  > The excellent Jeff Geerlings is an Ansible community hero, and I trust his efforts. No need to reinvent this particular wheel. Offers excellent configurability.
+* Collection - [`prometheus.prometheus`](https://github.com/prometheus-community/ansible) (specifically for the [`node_exporter` role](https://github.com/prometheus-community/ansible/tree/main/roles/node_exporter))
   > This repeatedly came up while I was researching Prometheus and Ansible. As it's blessed by both the Ansible and Prometheus communities, I decided to trust it. I'm unfamiliar with Prometheus, and writing this installation manually would likely cause a significant delay. Also offers excellent configurability.
 
 

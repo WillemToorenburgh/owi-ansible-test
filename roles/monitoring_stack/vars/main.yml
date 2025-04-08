@@ -1,17 +1,12 @@
-monitoring_stack_grafana_default_admin_password: ~
+# Directories and file locations
+monitoring_stack_docker_directory: "/home/{{ monitoring_stack_user }}/docker"
+monitoring_stack_compose_file_location: "{{ monitoring_stack_docker_directory }}/docker-compose.yml"
 
-# Expected to be a list of dictionaries in the shape of:
-# - name: <string> # Human-friendly name
-#   is_admin: <true|false>
-#   username: <string> # For logging in
-#   email: <string>
-#   password: <string> # Note: can create passwords, but cannot alter existing ones!
-#   state: <present|absent> # For provisioning or deprovisioning users. Once a single run has been done with `state:absent`, the user entry can be removed.
-monitoring_stack_grafana_users: ~
+monitoring_stack_prometheus_data_directory: "{{ monitoring_stack_docker_directory }}/prometheus/data"
+monitoring_stack_prometheus_config_directory: "{{ monitoring_stack_docker_directory }}/prometheus/config"
 
-# Dashboards
-# Expects a list of dictionaries in the shape of:
-# - id: <int>
-#   revision: <int>
-#   folder: <int> # Optional; if undefined, defaults to the "General" folder
-monitoring_stack_grafana_dashboards_import_ids: []
+monitoring_stack_grafana_data_directory: "{{ monitoring_stack_docker_directory }}/grafana/data"
+monitoring_stack_grafana_logs_directory: "{{ monitoring_stack_docker_directory }}/grafana/logs"
+
+# Networking
+monitoring_stack_docker_network_name: monitoring_stack_network

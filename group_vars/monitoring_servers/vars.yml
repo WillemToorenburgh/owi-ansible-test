@@ -1,9 +1,40 @@
-grafana_default_admin_password: "{{ secrets_grafana_default_admin_password }}"
+## geerlingguy.docker vars
+# See the geerlingguy.docker Readme for all the available configuration options!
+# https://github.com/geerlingguy/ansible-role-docker/blob/master/README.md
+docker_users:
+  - "{{ human_user }}"
 
-grafana_users:
+# Expose the Daemon's stats on a port for Prometheus to consume
+# TODO: this IP is the default one that Docker assigns the host inside a Docker network. It's a bit of a kludge to bind to this;
+# research the best way to allow access from Docker networks without just binding to 0.0.0.0
+docker_daemon_options:
+  metrics-addr: "172.17.0.1:9323"
+
+## node_exporter vars
+# See the prometheus.prometheus.node_exporter Readme for all the available configuration options!
+# https://github.com/prometheus-community/ansible/tree/main/roles/node_exporter
+# Intentionally empty this var so node_exporter doesn't require authentication
+# TODO: assess whether this is a security problem when metrics are only accessible locally
+node_exporter_basic_auth_users: {}
+
+# TODO: same as docker_daemon_options metrics-addr above
+node_exporter_web_listen_address: "172.17.0.1:9100"
+
+## monitoring_stack vars
+# See roles/monitoring_stack/README.md
+monitoring_stack_grafana_default_admin_password: "{{ secrets_grafana_default_admin_password }}"
+
+monitoring_stack_grafana_users:
   - name: Offworld Admin
     is_admin: true
     username: offworld-admin
     email: offworld-admin@offworldindustries.example.CouchLAN # My local network's TLD, to make sure no actual mail gets sent
     password: "{{ secrets_human_password }}" # Using the same secret in `linux_hosts`. Creates a dependency on the `linux_hosts` group, but that's fine for now
     state: present
+
+# See roles/monitoring_stack/README.md
+monitoring_stack_grafana_dashboards_import_ids:
+  # Imports this dashboard: https://grafana.com/grafana/dashboards/1860-node-exporter-full/
+  - id: 1860
+    revision: 37
+    folder: "Node"

@@ -1,4 +1,4 @@
-- name: "Create user {{ linux_common_human_user }}"
+- name: "Create user {{ linux_common_human_user | mandatory(msg='You must specify a username for the human user!') }}"
   ansible.builtin.user:
     name: "{{ linux_common_human_user }}"
     password: "{{ linux_common_human_password | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"

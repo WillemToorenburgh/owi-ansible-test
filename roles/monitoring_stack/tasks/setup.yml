@@ -27,7 +27,8 @@
 # Not tagged with "users" or "grafana*" as this only ever applies on Grafana's first startup
 - name: Create Grafana admin password file
   ansible.builtin.copy:
-    content: "{{ monitoring_stack_grafana_default_admin_password }}"
+    content: "{{ monitoring_stack_grafana_default_admin_password
+                | mandatory(msg='You must specify a default Grafana admin password in your group_vars, host_vars, or playbook!') }}"
     dest: "{{ monitoring_stack_docker_directory }}/grafana/grafana_admin.secret"
     owner: "{{ monitoring_stack_user }}"
     group: "{{ monitoring_stack_user }}"

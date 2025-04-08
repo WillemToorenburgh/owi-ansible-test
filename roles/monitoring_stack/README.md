@@ -2,9 +2,11 @@
 
 ## Configuration and variables
 
-### Vars
+### Defaults
 
-`monitoring_stack_grafana_users` - This var expects a list of dictionaries defining users:
+`monitoring_stack_grafana_default_admin_password` - Password used for the first-time Grafana setup. This value must be set!
+
+`monitoring_stack_grafana_users` - This var expects a list of dictionaries defining users. Defaults to empty list.
 
 ```yaml
 - name: <string> # Human-friendly name
@@ -15,7 +17,7 @@
   state: <present|absent> # For provisioning or deprovisioning users. Once a single run has been done with `state:absent`, the user entry can be removed.
 ```
 
-`monitoring_stack_grafana_dashboards_import_ids` - Expects a list of dictionaries defining dashboards to be imported from https://grafana.com/grafana/dashboards
+`monitoring_stack_grafana_dashboards_import_ids` - Expects a list of dictionaries defining dashboards to be imported from https://grafana.com/grafana/dashboards. Defaults to empty list.
 
 ```yaml
  - id: <int>
@@ -28,9 +30,9 @@
   folder: "Node"
 ```
 
-### Defaults
+### Vars
 
-All the values in `defaults/main.yml` are there for convenience and generally don't need to be changed. The exception is `monitoring_stack_docker_compose_state`, which can be used to force the Docker compose project to restart, tear down, etc.
+All the values in `vars/main.yml` are there for role-internal use and generally don't need to be changed.
 
 ## Working with Dashboard JSON files
 

@@ -1,3 +1,4 @@
+# All these vars expect values from the playbook level
 linux_common_human_user: ~
 linux_common_human_password: ~
 linux_common_human_ssh_public_key: ~

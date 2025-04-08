@@ -1,0 +1,17 @@
+monitoring_stack_grafana_default_admin_password: ~
+
+# Expected to be a list of dictionaries in the shape of:
+# - name: <string> # Human-friendly name
+#   is_admin: <true|false>
+#   username: <string> # For logging in
+#   email: <string>
+#   password: <string> # Note: can create passwords, but cannot alter existing ones!
+#   state: <present|absent> # For provisioning or deprovisioning users. Once a single run has been done with `state:absent`, the user entry can be removed.
+monitoring_stack_grafana_users: ~
+
+# Dashboards
+# Expects a list of dictionaries in the shape of:
+# - id: <int>
+#   revision: <int>
+#   folder: <int> # Optional; if undefined, defaults to the "General" folder
+monitoring_stack_grafana_dashboards_import_ids: []

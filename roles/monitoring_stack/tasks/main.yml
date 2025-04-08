@@ -31,3 +31,19 @@
     - configure
     - configure-prometheus
 
+- name: Import dashboards from grafana.com
+  ansible.builtin.include_tasks:
+    file: dashboards/import_from_grafana_website.yml
+  when: monitoring_stack_grafana_dashboards_import_ids | length > 0
+  tags:
+    - dashboards
+    - configure-grafana
+
+- name: Import dashboards from role
+  ansible.builtin.include_tasks:
+    file: dashboards/import_from_role.yml
+  tags:
+    - dashboards
+    - configure-grafana
+  # TODO: make this run based off whether there are files in the `files/` directory,
+  #       if the loop inside the role doesn't already handle that for us

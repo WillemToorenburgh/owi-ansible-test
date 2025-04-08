@@ -1,0 +1,23 @@
+- name: Ensure dashboard folders exist
+  community.grafana.grafana_folder:
+    url: http://localhost:3000
+    url_username: admin
+    url_password: "{{ monitoring_stack_grafana_default_admin_password }}"
+    name: "{{ item.folder | default('General', true) }}"
+  loop: "{{ monitoring_stack_grafana_dashboards_import_ids }}"
+
+- name: Import dashboards from grafana.com
+  community.grafana.grafana_dashboard:
+    url: http://localhost:3000
+    url_username: admin
+    url_password: "{{ monitoring_stack_grafana_default_admin_password }}"
+    dashboard_id: "{{ item.id }}"
+    dashboard_revision: "{{ item.revision }}"
+    folder: "{{ item.folder | default(omit, true) }}"
+  loop: "{{ monitoring_stack_grafana_dashboards_import_ids }}"
+  register: dashboard_result
+  failed_when:
+    # Successful dashboard creation returns a UID item
+    - 'dashboard_result.uid is undefined'
+    # A dashboard already existing throws an HTTP 412 error, which we are okay with
+    - '"HTTP: 412" not in dashboard_result.msg'

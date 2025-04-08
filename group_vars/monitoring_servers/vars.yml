@@ -1,1 +1,9 @@
 grafana_default_admin_password: "{{ secrets_grafana_default_admin_password }}"
+
+grafana_users:
+  - name: Offworld Admin
+    is_admin: true
+    username: offworld-admin
+    email: offworld-admin@offworldindustries.example.CouchLAN # My local network's TLD, to make sure no actual mail gets sent
+    password: "{{ secrets_human_password }}" # Using the same secret in `linux_hosts`. Creates a dependency on the `linux_hosts` group, but that's fine for now
+    state: present

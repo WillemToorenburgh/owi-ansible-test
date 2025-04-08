@@ -23,3 +23,13 @@
     - "{{ monitoring_stack_grafana_data_directory }}"
     - "{{ monitoring_stack_grafana_logs_directory }}"
   become: true
+
+# Not tagged with "users" or "grafana*" as this only ever applies on Grafana's first startup
+- name: Create Grafana admin password file
+  ansible.builtin.copy:
+    content: "{{ monitoring_stack_grafana_default_admin_password }}"
+    dest: "{{ monitoring_stack_docker_directory }}/grafana/grafana_admin.secret"
+    owner: "{{ monitoring_stack_user }}"
+    group: "{{ monitoring_stack_user }}"
+    mode: "0600"
+  become: true

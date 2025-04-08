@@ -1,3 +1,7 @@
+# Action that docker compose should take
+# Must be one of: [absent,stopped,restarted,present]
+monitoring_stack_docker_compose_state: present
+
 # User that the containers will use
 monitoring_stack_user: "monitoring-user"
 monitoring_stack_user_id: 1111

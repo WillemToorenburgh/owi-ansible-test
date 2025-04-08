@@ -1,0 +1,23 @@
+- name: "Provision users (status always changed, output masked)"
+  community.grafana.grafana_user:
+    url: http://localhost:3000
+    url_username: admin
+    url_password: "{{ monitoring_stack_grafana_default_admin_password }}"
+    name: "{{ item.name }}"
+    login: "{{ item.username }}"
+    email: "{{ item.email }}"
+    password: "{{ item.password }}"
+    is_admin: "{{ item.is_admin }}"
+    state: "{{ item.state }}"
+  loop: "{{ monitoring_stack_grafana_users }}"
+  when: monitoring_stack_grafana_users | length > 0
+  register: create_users_result
+  # To avoid logging passwords in plain-text
+  no_log: true
+  tags: ["users"]
+  # Using a retry until loop to allow containers to finish starting up if
+  # this is being run against a very fresh machine.
+  # Using `changed` as the condition is safe as the command will always return `true`
+  until: create_users_result.changed is defined and create_users_result.changed == true
+  retries: 5
+  delay: 10

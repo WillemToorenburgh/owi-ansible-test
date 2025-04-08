@@ -5,7 +5,29 @@
 - name: Prepare config files
   ansible.builtin.include_tasks:
     file: config.yml
+  tags:
+    - configure
+    - configure-prometheus
+    - configure-containers
 
 - name: Run Docker Compose
   ansible.builtin.include_tasks:
     file: compose-stack.yml
+  tags:
+    - configure-containers
+    - docker-compose
+
+- name: Set up Grafana users
+  ansible.builtin.include_tasks:
+    file: users.yml
+  tags:
+    - users
+    - configure-grafana
+
+- name: Set up Prometheus data source in Grafana
+  ansible.builtin.include_tasks:
+    file: datasources.yml
+  tags:
+    - configure
+    - configure-prometheus
+

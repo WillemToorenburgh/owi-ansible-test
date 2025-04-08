@@ -19,12 +19,3 @@
     group: "{{ monitoring_stack_user }}"
     mode: "0600"
   become: true
-
-- name: Create Grafana admin password file
-  ansible.builtin.copy:
-    content: "{{ grafana_default_admin_password }}"
-    dest: "{{ monitoring_stack_docker_directory }}/grafana/grafana_admin.secret"
-    owner: "{{ monitoring_stack_user }}"
-    group: "{{ monitoring_stack_user }}"
-    mode: "0600"
-  become: true

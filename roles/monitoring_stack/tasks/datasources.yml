@@ -1,0 +1,11 @@
+- name: Connect Prometheus data source
+  community.grafana.grafana_datasource:
+    name: "prometheus"
+    ds_type: prometheus
+    url: http://localhost:3000
+    # Un-parameterized for now, as we're using the built-in admin account for managing Grafana, which seems appropriate enough
+    url_username: admin
+    url_password: "{{ monitoring_stack_grafana_default_admin_password }}"
+    # Can use the container's name thanks to Docker magic DNS
+    ds_url: http://prometheus:9090
+    state: present

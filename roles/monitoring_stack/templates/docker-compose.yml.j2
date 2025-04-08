@@ -5,7 +5,7 @@ services:
     pull_policy: missing
     user: "{{ monitoring_stack_user_id }}"
     ports:
-      - "9090:9090"
+      - "9090:{{ monitoring_stack_prometheus_port }}"
     # Enable Docker's magic internal host location
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -23,7 +23,7 @@ services:
     depends_on:
       - prometheus
     ports:
-      - "3000:3000"
+      - "3000:{{ monitoring_stack_grafana_port }}"
     environment:
       # Log to both console and file
       - GF_LOG_MODE=console file

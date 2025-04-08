@@ -9,15 +9,8 @@ global:
   # Attach these labels to any time series or alerts when communicating with
   # external systems (federation, remote storage, Alertmanager).
   external_labels:
-    monitor: "codelab-monitor"
+    monitor: "offworld-monitoring"
 
-# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
-rule_files:
-  # - "first.rules"
-  # - "second.rules"
-
-# A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Prometheus itself.
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: prometheus
@@ -26,6 +19,7 @@ scrape_configs:
     # scheme defaults to 'http'.
 
     static_configs:
+      # NOTE: this is not adjusted by Ansible as it's referring to its own port inside the container, not the one exposed by the host
       - targets: ["localhost:9090"]
 
   - job_name: docker
@@ -36,7 +30,7 @@ scrape_configs:
       - targets: ["host.docker.internal:9323"]
 
   # Monitor the machine we're running on using node_exporter
-  - job_name: host
+  - job_name: node
     static_configs:
       # node_exporter listens on 9100 by default
       - targets: ["host.docker.internal:9100"]

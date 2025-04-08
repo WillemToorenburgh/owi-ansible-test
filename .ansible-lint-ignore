@@ -1,0 +1,3 @@
+# This file contains ignores rule violations for ansible-lint
+roles/monitoring_stack/tasks/main.yml key-order[task]
+roles/monitoring_stack/tasks/main.yml name[missing]

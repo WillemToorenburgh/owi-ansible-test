@@ -8,6 +8,7 @@
       - docker
   become: true
   register: monitoring_user
+  tags: ["users"]
 
 - name: Create compose project directories
   ansible.builtin.file:

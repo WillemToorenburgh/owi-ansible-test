@@ -2,48 +2,57 @@
   ansible.builtin.include_tasks:
     file: setup.yml
 
-- name: Prepare config files
-  ansible.builtin.include_tasks:
-    file: config.yml
+# Using blocks to apply tags to include_tasks steps without having to duplicate all the tag lists
+# Applied some ansible-lint ignore rules to these blocks as they're meant purely for wrapping tags
+
+- block:
+    - name: Prepare config files
+      ansible.builtin.include_tasks:
+        file: config.yml
   tags:
     - configure
     - configure-prometheus
+
+- block:
+    - name: Run containers
+      ansible.builtin.include_tasks:
+        file: containers.yml
+  tags:
+    - configure
     - configure-containers
 
-- name: Run Docker Compose
-  ansible.builtin.include_tasks:
-    file: compose-stack.yml
+- block:
+    - name: Set up Grafana users
+      ansible.builtin.include_tasks:
+        file: users.yml
   tags:
-    - configure-containers
-    - docker-compose
-
-- name: Set up Grafana users
-  ansible.builtin.include_tasks:
-    file: users.yml
-  tags:
+    - configure
+    - configure-grafana
     - users
-    - configure-grafana
 
-- name: Set up Prometheus data source in Grafana
-  ansible.builtin.include_tasks:
-    file: datasources.yml
+- block:
+    - name: Set up Prometheus data source in Grafana
+      ansible.builtin.include_tasks:
+        file: datasources.yml
   tags:
     - configure
     - configure-prometheus
 
-- name: Import dashboards from grafana.com
-  ansible.builtin.include_tasks:
-    file: dashboards/import_from_grafana_website.yml
-  when: monitoring_stack_grafana_dashboards_import_ids | length > 0
+- block:
+    - name: Import dashboards from grafana.com
+      ansible.builtin.include_tasks:
+        file: dashboards/import_from_grafana_website.yml
+      when: monitoring_stack_grafana_dashboards_import_ids | length > 0
   tags:
-    - dashboards
+    - configure
     - configure-grafana
+    - dashboards
 
-- name: Import dashboards from role
-  ansible.builtin.include_tasks:
-    file: dashboards/import_from_role.yml
+- block:
+    - name: Import dashboards from role
+      ansible.builtin.include_tasks:
+        file: dashboards/import_from_file.yml
   tags:
-    - dashboards
+    - configure
     - configure-grafana
-  # TODO: make this run based off whether there are files in the `files/` directory,
-  #       if the loop inside the role doesn't already handle that for us
+    - dashboards

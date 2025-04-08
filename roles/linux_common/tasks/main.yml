@@ -23,3 +23,14 @@
     mode: "0644"
   notify: Reload ssh
   become: true
+  tags: ["configure"]
+
+- name: Install helpful programs
+  ansible.builtin.package:
+    name:
+      - nano
+      - htop
+      - ncdu
+    state: present
+  become: true
+  tags: ["configure"]

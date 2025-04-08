@@ -1,0 +1,76 @@
+# TODO: for the moment, this is executed as root, though the containers run as the monitoring user.
+#       Assess if this is okay, or if more work should go into trying to execute this step as the
+#       monitoring user. Ansible struggles mightily when told to become an unprivileged user!
+#       https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_privilege_escalation.html#risks-of-becoming-an-unprivileged-user
+- name: Set up Docker network
+  community.docker.docker_network:
+    name: "{{ monitoring_stack_docker_network_name }}"
+    state: present
+  become: true
+
+- name: Set up Prometheus container
+  community.docker.docker_container:
+    name: prometheus
+    state: started
+    comparisons:
+      image: strict
+      user: strict
+      volumes: strict
+      etc_hosts: strict
+      published_ports: strict
+      networks: strict
+    image: "prom/prometheus:{{ monitoring_stack_prometheus_container_tag }}"
+    restart_policy: unless-stopped
+    detach: true
+    networks:
+      - name: "{{ monitoring_stack_docker_network_name }}"
+        aliases:
+          - prometheus
+    user: "{{ monitoring_stack_user_id }}"
+    published_ports:
+      - "9090:{{ monitoring_stack_prometheus_port }}"
+    # Enable Docker's magic internal host location
+    etc_hosts:
+      "host.docker.internal": "host-gateway"
+    volumes:
+      # Mount for config files
+      - "{{ monitoring_stack_prometheus_config_directory }}:/etc/prometheus:ro"
+      # Mount for data
+      - "{{ monitoring_stack_prometheus_data_directory }}:/prometheus:rw"
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f localhost:9090/-/healthy']
+  become: true
+
+- name: Set up Grafana container
+  community.docker.docker_container:
+    name: grafana
+    state: started
+    comparisons:
+      image: strict
+      user: strict
+      volumes: strict
+      etc_hosts: strict
+      published_ports: strict
+      networks: strict
+    image: "grafana/grafana:{{ monitoring_stack_grafana_container_tag }}"
+    restart_policy: unless-stopped
+    detach: true
+    networks:
+      - name: "{{ monitoring_stack_docker_network_name }}"
+        aliases:
+          - grafana
+    user: "{{ monitoring_stack_user_id }}"
+    published_ports:
+      - "3000:{{ monitoring_stack_grafana_port }}"
+    env:
+      # Log to both console and file
+      "GF_LOG_MODE": console file
+      # Access the admin password via secrets
+      "GF_SECURITY_ADMIN_PASSWORD__FILE": /run/secrets/grafana_admin_password
+    volumes:
+      - "{{ monitoring_stack_docker_directory }}/grafana/grafana_admin.secret:/run/secrets/grafana_admin_password:ro"
+      - "{{ monitoring_stack_grafana_data_directory }}:/var/lib/grafana:rw"
+      - "{{ monitoring_stack_grafana_logs_directory }}:/var/log/grafana:rw"
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f localhost:3000/api/health']
+  become: true

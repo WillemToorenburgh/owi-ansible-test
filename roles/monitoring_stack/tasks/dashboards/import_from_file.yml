@@ -27,6 +27,12 @@
     folder: "{{ item.path | dirname }}"
   with_community.general.filetree: files/dashboards/
   when: item.state == 'file'
+  register: dashboard_result
+  failed_when:
+    # Successful dashboard creation returns a UID item
+    - 'dashboard_result.uid is undefined'
+    # A dashboard already existing throws an HTTP 412 error, which we are okay with
+    - '"HTTP: 412" not in dashboard_result.msg'
 
 - name: Clean up temporary files
   ansible.builtin.file:

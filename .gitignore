@@ -4,6 +4,7 @@
 .cache
 galaxy/roles/**
 galaxy/collections/**
+!galaxy/**/.gitkeep
 
 # Vault files
 .ansiblevault
